@@ -34,16 +34,16 @@ register_shutdown_function(
         $requestTs = array('sec' => $time, 'usec' => 0);
         $requestTsMicro = array('sec' => $requestTimeFloat[0], 'usec' => $requestTimeFloat[1]);
 
-        $data['meta'] = array(
-            'url' => $uri,
-            'SERVER' => $_SERVER,
-            'get' => $_GET,
-            'env' => $_ENV,
-            'simple_url' => Xhgui_Util::simpleUrl($uri),
-            'request_ts' => $requestTs,
-            'request_ts_micro' => $requestTsMicro,
-            'request_date' => date('Y-m-d', $time),
-        );
+//        $data['meta'] = array(
+//            'url' => $uri,
+//            'SERVER' => $_SERVER,
+//            'get' => $_GET,
+//            'env' => $_ENV,
+//            'simple_url' => Xhgui_Util::simpleUrl($uri),
+//            'request_ts' => $requestTs,
+//            'request_ts_micro' => $requestTsMicro,
+//            'request_date' => date('Y-m-d', $time),
+//        );
 
         $path = realpath(dirname(__FILE__) . '/../output/' . date('Y-m-d') . '.log');
 
