@@ -1,12 +1,5 @@
 <?php
 
-$host = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : null;
-$uri = array_key_exists('REQUEST_URI', $_SERVER) ? $_SERVER['REQUEST_URI'] : null;
-
-if ($host !== 'www.digistorm.com.au' && $uri !== 'company') {
-    return;
-}
-
 tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS);
 
 register_shutdown_function(
@@ -24,9 +17,19 @@ register_shutdown_function(
         ignore_user_abort(true);
         flush();
 
+        $host = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : null;
+        $uri = array_key_exists('REQUEST_URI', $_SERVER) ? $_SERVER['REQUEST_URI'] : null;
+        $path = realpath(dirname(__FILE__) . '/../output') . '/' . date('Y-m-d') . '.log';
+
+        error_log($uri . PHP_EOL, 3, $path);
+
         if (empty($uri) && isset($_SERVER['argv'])) {
             $cmd = basename($_SERVER['argv'][0]);
             $uri = $cmd . ' ' . implode(' ', array_slice($_SERVER['argv'], 1));
+        }
+
+        if ($host !== 'www.digistorm.com.au' && $uri !== '/company') {
+            return;
         }
 
         $time = array_key_exists('REQUEST_TIME', $_SERVER)
@@ -51,11 +54,11 @@ register_shutdown_function(
 //            'request_date' => date('Y-m-d', $time),
 //        );
 
-        $path = realpath(dirname(__FILE__) . '/../output') . '/' . date('Y-m-d') . '.log';
+
 
         try {
 //            error_log(sprintf("%s%s\t%s\n", $host, $uri, $requestTs), 3, $path);
-            error_log(json_encode($data['main()']), 3, $path);
+            error_log(json_encode($data['main()']) . PHP_EOL, 3, $path);
         } catch (Exception $e) {
             error_log('xhgui - ' . $e->getMessage());
         }
