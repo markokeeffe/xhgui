@@ -5,9 +5,7 @@ tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_S
 register_shutdown_function(
     function () {
 
-        $data = [
-            'profile' => tideways_disable(),
-        ];
+        $profile = tideways_disable();
 
 
         // ignore_user_abort(true) allows your PHP script to continue executing, even if the user has terminated their request.
@@ -33,31 +31,17 @@ register_shutdown_function(
         $time = array_key_exists('REQUEST_TIME', $_SERVER)
             ? $_SERVER['REQUEST_TIME']
             : time();
-        $requestTimeFloat = explode('.', $_SERVER['REQUEST_TIME_FLOAT']);
-        if (!isset($requestTimeFloat[1])) {
-            $requestTimeFloat[1] = 0;
-        }
 
-        $requestTs = array('sec' => $time, 'usec' => 0);
-        $requestTsMicro = array('sec' => $requestTimeFloat[0], 'usec' => $requestTimeFloat[1]);
+        $data = [
+            'host' => $host,
+            'uri' => $uri,
+            'timestamp' => $time,
+            'wall_time' => $profile['main()']['wt'],
+            'cpu' => $profile['main()']['cpu'],
+            'memory_usage' => $profile['main()']['mu'],
+            'peak_memory_usage' => $profile['main()']['pmu'],
+        ];
 
-//        $data['meta'] = array(
-//            'url' => $uri,
-//            'SERVER' => $_SERVER,
-//            'get' => $_GET,
-//            'env' => $_ENV,
-//            'simple_url' => Xhgui_Util::simpleUrl($uri),
-//            'request_ts' => $requestTs,
-//            'request_ts_micro' => $requestTsMicro,
-//            'request_date' => date('Y-m-d', $time),
-//        );
-
-
-
-        try {
-            error_log(sprintf("%s%s\t%s\t%s", $host, $uri, $time, json_encode($data['profile']['main()'])) . PHP_EOL, 3, $path);
-        } catch (Exception $e) {
-            error_log('xhgui - ' . $e->getMessage());
-        }
+        error_log(json_encode($data) . PHP_EOL, 3, $path);
     }
 );
