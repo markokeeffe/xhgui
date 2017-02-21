@@ -55,8 +55,7 @@ register_shutdown_function(
 
 
         try {
-            error_log(sprintf("%s%s\t%s", $host, $uri, $time) . PHP_EOL, 3, $path);
-            error_log(json_encode(array_keys($data)) . PHP_EOL, 3, $path);
+            error_log(sprintf("%s%s\t%s\t%s", $host, $uri, $time, json_encode($data['profile']['main()'])) . PHP_EOL, 3, $path);
         } catch (Exception $e) {
             error_log('xhgui - ' . $e->getMessage());
         }
