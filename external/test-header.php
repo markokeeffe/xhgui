@@ -21,8 +21,6 @@ register_shutdown_function(
         $uri = array_key_exists('REQUEST_URI', $_SERVER) ? $_SERVER['REQUEST_URI'] : null;
         $path = realpath(dirname(__FILE__) . '/../output') . '/' . date('Y-m-d') . '.log';
 
-        error_log($uri . PHP_EOL, 3, $path);
-
         if (empty($uri) && isset($_SERVER['argv'])) {
             $cmd = basename($_SERVER['argv'][0]);
             $uri = $cmd . ' ' . implode(' ', array_slice($_SERVER['argv'], 1));
@@ -57,7 +55,7 @@ register_shutdown_function(
 
 
         try {
-//            error_log(sprintf("%s%s\t%s\n", $host, $uri, $requestTs), 3, $path);
+            error_log(sprintf("%s%s\t%s\n", $host, $uri, $requestTs) . PHP_EOL, 3, $path);
             error_log(json_encode($data['main()']) . PHP_EOL, 3, $path);
         } catch (Exception $e) {
             error_log('xhgui - ' . $e->getMessage());
