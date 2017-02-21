@@ -45,7 +45,7 @@ register_shutdown_function(
 //            'request_date' => date('Y-m-d', $time),
 //        );
 
-        $path = realpath(dirname(__FILE__) . '/../output/' . date('Y-m-d') . '.log');
+        $path = realpath(dirname(__FILE__) . '/../output') . '/' . date('Y-m-d') . '.log';
 
         try {
 //            error_log(sprintf("%s%s\t%s\n", $host, $uri, $requestTs), 3, $path);
