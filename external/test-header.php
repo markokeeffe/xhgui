@@ -1,4 +1,12 @@
 <?php
+
+$host = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : null;
+$uri = array_key_exists('REQUEST_URI', $_SERVER) ? $_SERVER['REQUEST_URI'] : null;
+
+if ($host !== 'www.digistorm.com.au' && $uri !== 'company') {
+    return;
+}
+
 tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS);
 
 register_shutdown_function(
@@ -16,8 +24,6 @@ register_shutdown_function(
         ignore_user_abort(true);
         flush();
 
-        $host = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : null;
-        $uri = array_key_exists('REQUEST_URI', $_SERVER) ? $_SERVER['REQUEST_URI'] : null;
         if (empty($uri) && isset($_SERVER['argv'])) {
             $cmd = basename($_SERVER['argv'][0]);
             $uri = $cmd . ' ' . implode(' ', array_slice($_SERVER['argv'], 1));
@@ -49,7 +55,7 @@ register_shutdown_function(
 
         try {
 //            error_log(sprintf("%s%s\t%s\n", $host, $uri, $requestTs), 3, $path);
-            error_log(json_encode($data), 3, $path);
+            error_log(json_encode($data['main()']), 3, $path);
         } catch (Exception $e) {
             error_log('xhgui - ' . $e->getMessage());
         }
